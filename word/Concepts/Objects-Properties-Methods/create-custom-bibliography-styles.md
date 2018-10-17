@@ -34,30 +34,30 @@ At the top of the file, add the following code:
  
 <xsl:stylesheet version="1.0" xmlns:xsl="https://www.w3.org/1999/XSL/Transform" xmlns:b="https://schemas.openxmlformats.org/officeDocument/2006/bibliography">
  
-<!--When the bibliography or citation is in your document, it's just HTML-->
+   <!--When the bibliography or citation is in your document, it's just HTML-->
  
-<xsl:output method="html" encoding="us-ascii"/>
+   <xsl:output method="html" encoding="us-ascii"/>
    
-<!--Match the root element, and dispatch to its children-->
+   <!--Match the root element, and dispatch to its children-->
    
-<xsl:template match="/">
+   <xsl:template match="/">
 
-<xsl:apply-templates select="*" />
+      <xsl:apply-templates select="*" />
 
-</xsl:template>
+   </xsl:template>
 ```
 
 As the comments indicate, Word uses HTML to represent a bibliography or citation within a document. Most of the preceding XML code is just preparation for the more interesting parts of the style. For example, you can give your style a version number to track the changes you make, as shown in the following example.
 
 
 ```xml
-<!--Set an optional version number for this style--> 
+   <!--Set an optional version number for this style--> 
 
-<xsl:template match="b:version"> 
+   <xsl:template match="b:version"> 
 
-   <xsl:text>2006.5.07</xsl:text>
+      <xsl:text>2006.5.07</xsl:text>
 
-</xsl:template>
+   </xsl:template>
 
 ```
 
@@ -67,11 +67,11 @@ More importantly, you can give your style a name. Add this tag: <xsl:when test="
 
 
 ```xml
-<xsl:when test="b:StyleNameLocalized/b:Lcid='1033'">
+   <xsl:when test="b:StyleNameLocalized/b:Lcid='1033'">
 
-   <xsl:text>[Your Style Name]</xsl:text>
+      <xsl:text>[Your Style Name]</xsl:text>
  
-</xsl:when>
+   </xsl:when>
 ```
 
 This section contains the locale name of your style. In the case of our example file, we want our custom bibliography style name, "Simple Book Style," to appear in the **Style** drop-down list on the **References** tab. To do so, add the following XML code to specify that the style name be in the English locale (Lcid determines the language).
@@ -80,13 +80,13 @@ This section contains the locale name of your style. In the case of our example 
 
 
 ```xml
-<!--Defines the name of the style in the References dropdown list-->
-<xsl:when test="b:StyleNameLocalized"> 
-   <xsl:choose> 
-      <xsl:when test="b:StyleNameLocalized/b:Lcid='1033'"> 
-         <xsl:text>Simple Book Style</xsl:text> 
-      </xsl:when> 
-</xsl:when>
+   <!--Defines the name of the style in the References dropdown list-->
+   <xsl:when test="b:StyleNameLocalized"> 
+      <xsl:choose> 
+         <xsl:when test="b:StyleNameLocalized/b:Lcid='1033'"> 
+            <xsl:text>Simple Book Style</xsl:text> 
+         </xsl:when> 
+   </xsl:when>
 ```
 
 Your style will now appear under its own name in the **Bibliography Style** dropdown list-box in the application.
@@ -134,27 +134,27 @@ In the code, you can specify the fields that are important for your bibliography
 
 
 ```xml
-<!--Specifies which fields should appear in the Create Source dialog box when in a collapsed state (The Show All Bibliography Fields check box is cleared)-->
+   <!--Specifies which fields should appear in the Create Source dialog box when in a collapsed state (The Show All Bibliography Fields check box is cleared)-->
 
-<xsl:template match="b:GetImportantFields[b:SourceType = 'Book']"> 
-   <b:ImportantFields> 
-      <b:ImportantField> 
-         <xsl:text>b:Author/b:Author/b:NameList</xsl:text> 
-      </b:ImportantField> 
-      <b:ImportantField> 
-         <xsl:text>b:Title</xsl:text> 
-      </b:ImportantField> 
-     <b:ImportantField> 
-         <xsl:text>b:Year</xsl:text> 
-      </b:ImportantField> 
-      <b:ImportantField> 
-         <xsl:text>b:City</xsl:text>
-      </b:ImportantField> 
-      <b:ImportantField> 
-         <xsl:text>b:Publisher</xsl:text> 
-      </b:ImportantField> 
-   </b:ImportantFields> 
-</xsl:template>
+   <xsl:template match="b:GetImportantFields[b:SourceType = 'Book']"> 
+      <b:ImportantFields> 
+         <b:ImportantField> 
+            <xsl:text>b:Author/b:Author/b:NameList</xsl:text> 
+         </b:ImportantField> 
+         <b:ImportantField> 
+            <xsl:text>b:Title</xsl:text> 
+         </b:ImportantField> 
+        <b:ImportantField> 
+            <xsl:text>b:Year</xsl:text> 
+         </b:ImportantField> 
+         <b:ImportantField> 
+            <xsl:text>b:City</xsl:text>
+         </b:ImportantField> 
+         <b:ImportantField> 
+            <xsl:text>b:Publisher</xsl:text> 
+         </b:ImportantField> 
+      </b:ImportantFields> 
+   </xsl:template>
 ```
 
 The text in the <xsl:text> tags are references to the Sources.xml file. These references pull out the data that will populate each of the fields. Examine Sources.xml in \Microsoft\Bibliography\Sources.xml) to get a better idea about how these references match up to what is in the XML file.
@@ -175,29 +175,29 @@ The HTML required to do this would be embedded in your style sheet as follows.
 
 
 ```xml
-<!--Defines the output format for a simple Book (in the Bibliography) with important fields defined-->
+   <!--Defines the output format for a simple Book (in the Bibliography) with important fields defined-->
 
-<xsl:template match="b:Source[b:SourceType = 'Book']"> 
+   <xsl:template match="b:Source[b:SourceType = 'Book']"> 
 
-<!--Label the paragraph as an Office Bibliography paragraph-->
+   <!--Label the paragraph as an Office Bibliography paragraph-->
 
-   <p> 
-      <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
-      <xsl:text>, </xsl:text> 
-      <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:First"/> 
-      <xsl:text>. (</xsl:text> 
-      <xsl:value-of select="b:Year"/> 
-      <xsl:text>). </xsl:text> 
-      <i> 
-         <xsl:value-of select="b:Title"/> 
-         <xsl:text>. </xsl:text> 
-      </i> 
-      <xsl:value-of select="b:City"/> 
-      <xsl:text>: </xsl:text> 
-      <xsl:value-of select="b:Publisher"/> 
-      <xsl:text>.</xsl:text> 
-   </p> 
-</xsl:template>
+      <p> 
+         <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
+         <xsl:text>, </xsl:text> 
+         <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:First"/> 
+         <xsl:text>. (</xsl:text> 
+         <xsl:value-of select="b:Year"/> 
+         <xsl:text>). </xsl:text> 
+         <i> 
+            <xsl:value-of select="b:Title"/> 
+            <xsl:text>. </xsl:text> 
+         </i> 
+         <xsl:value-of select="b:City"/> 
+         <xsl:text>: </xsl:text> 
+         <xsl:value-of select="b:Publisher"/> 
+         <xsl:text>.</xsl:text> 
+      </p> 
+   </xsl:template>
 ```
 
 When you reference a book source in your Word document, Word needs to access this HTML so that it can use the custom style to display the source, so you'll have to add code to your custom style sheet to enable Word to do this.
@@ -206,22 +206,22 @@ When you reference a book source in your Word document, Word needs to access thi
 
 
 ```xml
-<!--Defines the output of the entire Bibliography-->
- 
-<xsl:template match="b:Bibliography"> 
-
-   <html xmlns="https://www.w3.org/TR/REC-html40"> 
+   <!--Defines the output of the entire Bibliography-->
+    
+   <xsl:template match="b:Bibliography"> 
    
-      <body> 
-
-         <xsl:apply-templates select ="b:Source[b:SourceType = 'Book']"> 
-
-         </xsl:apply-templates> 
-
-      </body> 
+      <html xmlns="https://www.w3.org/TR/REC-html40"> 
+      
+         <body> 
    
-   </html> 
-</xsl:template>
+            <xsl:apply-templates select ="b:Source[b:SourceType = 'Book']"> 
+   
+            </xsl:apply-templates> 
+   
+         </body> 
+      
+      </html> 
+   </xsl:template>
 ```
 
 In a similar fashion, you'll need to do the same thing for the citation output. Follow the pattern (Author, Year) for a single citation in the document.
@@ -230,19 +230,19 @@ In a similar fashion, you'll need to do the same thing for the citation output. 
 
 
 ```xml
-<!--Defines the output of the Citation-->
-<xsl:template match="b:Citation/b:Source[b:SourceType = 'Book']"> 
-   <html xmlns="https://www.w3.org/TR/REC-html40"> 
-      <body> 
-         <!-- Defines the output format as (Author, Year)--> 
-         <xsl:text>(</xsl:text> 
-            <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
-         <xsl:text>, </xsl:text> 
-         <xsl:value-of select="b:Year"/> 
-         <xsl:text>)</xsl:text> 
-      </body> 
-   </html> 
-</xsl:template>
+   <!--Defines the output of the Citation-->
+   <xsl:template match="b:Citation/b:Source[b:SourceType = 'Book']"> 
+      <html xmlns="https://www.w3.org/TR/REC-html40"> 
+         <body> 
+            <!-- Defines the output format as (Author, Year)--> 
+            <xsl:text>(</xsl:text> 
+               <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
+            <xsl:text>, </xsl:text> 
+            <xsl:value-of select="b:Year"/> 
+            <xsl:text>)</xsl:text> 
+         </body> 
+      </html> 
+   </xsl:template>
 ```
 
 Close up the file with the following lines.
@@ -250,8 +250,9 @@ Close up the file with the following lines.
 
 
 
-```vb
-<xsl:template match="text()" /> </xsl:stylesheet>
+```xml
+   <xsl:template match="text()" />
+</xsl:stylesheet>
 ```
 
 Save the file as MyBookStyle.XSL and drop it into the Styles directory (\Microsoft\Bibliography\Style). Restart Word, and your style is now under the style dropdown list. You can start using your new style.
@@ -294,19 +295,19 @@ Let's start by changing the citation. Here is the code for citations from last t
 
 
 ```xml
-<!--Defines the output of the Citation-->
-<xsl:template match="b:Citation/b:Source[b:SourceType = 'Book']"> 
-   <html xmlns="https://www.w3.org/TR/REC-html40"> 
-      <body> 
-         <!--Defines the output format as (Author, Year)-->
-         <xsl:text>(</xsl:text> 
-         <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/>
-         <xsl:text>, </xsl:text> 
-         <xsl:value-of select="b:Year"/> 
-         <xsl:text>)</xsl:text> 
-      </body>
-   </html> 
-</xsl:template>
+   <!--Defines the output of the Citation-->
+   <xsl:template match="b:Citation/b:Source[b:SourceType = 'Book']"> 
+      <html xmlns="https://www.w3.org/TR/REC-html40"> 
+         <body> 
+            <!--Defines the output format as (Author, Year)-->
+            <xsl:text>(</xsl:text> 
+            <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/>
+            <xsl:text>, </xsl:text> 
+            <xsl:value-of select="b:Year"/> 
+            <xsl:text>)</xsl:text> 
+         </body>
+      </html> 
+   </xsl:template>
 ```
 
 
@@ -315,13 +316,13 @@ Let's start by changing the citation. Here is the code for citations from last t
 Declare a new variable to help determine whether a corporate author is available. This variable is a count of the number of times the corporate author field exists in the source.
 
 
-```vb
-<!--Defines the output of the Citation-->
-<html xmlns="https://www.w3.org/TR/REC-html40">
-   <!--Count the number of Corporate Authors (can only be 0 or 1)-->
-      <xsl:variable name="cCorporateAuthors"> 
-         <xsl:value-of select="count(b:Author/b:Author/b:Corporate)" /> 
-      </xsl:variable>
+```xml
+      <!--Defines the output of the Citation-->
+      <html xmlns="https://www.w3.org/TR/REC-html40">
+         <!--Count the number of Corporate Authors (can only be 0 or 1)-->
+            <xsl:variable name="cCorporateAuthors"> 
+               <xsl:value-of select="count(b:Author/b:Author/b:Corporate)" /> 
+            </xsl:variable>
 ```
 
 
@@ -331,19 +332,18 @@ Verify that the corporate author has been filled in. You can do this by determin
 
 
 ```xml
-
-<xsl:text>(</xsl:text> 
-<xsl:choose>
-<!--When the corporate author exists, display the corporate author-->
-<xsl:when test ="$cCorporateAuthors!=0"> 
-<xsl:value-of select="b:Author/b:Author/b:Corporate"/> 
-</xsl:when>
-<!-- When the corporate author does not exist, display the normal author--> 
-<xsl:otherwise> 
-<xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
-</xsl:otherwise> 
-</xsl:choose> 
-<xsl:text>, </xsl:text>
+         <xsl:text>(</xsl:text> 
+         <xsl:choose>
+            <!--When the corporate author exists, display the corporate author-->
+            <xsl:when test ="$cCorporateAuthors!=0"> 
+               <xsl:value-of select="b:Author/b:Author/b:Corporate"/> 
+            </xsl:when>
+            <!-- When the corporate author does not exist, display the normal author--> 
+            <xsl:otherwise> 
+               <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
+            </xsl:otherwise> 
+         </xsl:choose> 
+         <xsl:text>, </xsl:text>
 ```
 
 Now that you've made the change for citations, make the change for the bibliography. Here's the bibliography section from earlier in this article.
@@ -352,17 +352,17 @@ Now that you've made the change for citations, make the change for the bibliogra
 
 
 ```xml
-<!--Defines the output format for a simple Book (in the Bibliography) with important fields defined-->
-<xsl: template match="b:Source[b:SourceType = 'Book']">
-<!--Label the paragraph as an Office Bibliography paragraph--> 
-<p> 
-<xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
-<xsl:text>, </xsl:text> 
-<xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:First"/> 
-<xsl:text>. (</xsl:text> 
-<xsl:value-of select="b:Year"/> 
-<xsl:text>). </xsl:text> 
-<i>
+   <!--Defines the output format for a simple Book (in the Bibliography) with important fields defined-->
+   <xsl: template match="b:Source[b:SourceType = 'Book']">
+   <!--Label the paragraph as an Office Bibliography paragraph--> 
+   <p> 
+   <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
+   <xsl:text>, </xsl:text> 
+   <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:First"/> 
+   <xsl:text>. (</xsl:text> 
+   <xsl:value-of select="b:Year"/> 
+   <xsl:text>). </xsl:text> 
+   <i>
 
 ```
 
@@ -373,12 +373,12 @@ Once again, let's start by adding a counting variable.
 
 
 ```xml
-<!--Defines the output format for a simple Book (in the Bibliography) with important fields defined-->
-<xsl: template match="b:Source[b:SourceType = 'Book']"> 
-<!--Count the number of Corporate Authors (can only be 0 or 1)-->
-<xsl:variable name="cCorporateAuthors"> 
-<xsl:value-of select="count(b:Author/b:Author/b:Corporate)" /> 
-</xsl:variable>
+   <!--Defines the output format for a simple Book (in the Bibliography) with important fields defined-->
+   <xsl: template match="b:Source[b:SourceType = 'Book']"> 
+      <!--Count the number of Corporate Authors (can only be 0 or 1)-->
+      <xsl:variable name="cCorporateAuthors"> 
+         <xsl:value-of select="count(b:Author/b:Author/b:Corporate)" /> 
+      </xsl:variable>
 ```
 
 
@@ -388,25 +388,25 @@ Verify that a corporate author exists.
 
 
 ```xml
-…..
-<xsl:variable name="cCorporateAuthors"> 
-<xsl:value-of select="count(b:Author/b:Author/b:Corporate)" /> 
-</xsl:variable> 
-<p> 
-<xsl:choose>
-<!--When the corporate author exists display the corporate author-->
-<xsl:when test ="$cCorporateAuthors!=0"> 
-<xsl:value-of select="b:Author/b:Author/b:Corporate"/> 
-<xsl:text>. (</xsl:text> 
-</xsl:when> 
-<xsl:otherwise> 
-<!--When the corporate author does not exist, display the normal author-->
-<xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
-<xsl:text>, </xsl:text> 
-<xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:First"/> 
-<xsl:text>. (</xsl:text>
-</xsl:otherwise> 
-</xsl:choose>
+...
+   <xsl:variable name="cCorporateAuthors"> 
+      <xsl:value-of select="count(b:Author/b:Author/b:Corporate)" /> 
+   </xsl:variable> 
+   <p> 
+   <xsl:choose>
+      <!--When the corporate author exists display the corporate author-->
+      <xsl:when test ="$cCorporateAuthors!=0"> 
+         <xsl:value-of select="b:Author/b:Author/b:Corporate"/> 
+         <xsl:text>. (</xsl:text> 
+      </xsl:when> 
+      <xsl:otherwise> 
+         <!--When the corporate author does not exist, display the normal author-->
+         <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:Last"/> 
+         <xsl:text>, </xsl:text> 
+         <xsl:value-of select="b:Author/b:Author/b:NameList/b:Person/b:First"/> 
+         <xsl:text>. (</xsl:text>
+      </xsl:otherwise> 
+   </xsl:choose>
 ```
 
 Here's the complete final code.
